@@ -1,0 +1,109 @@
+﻿<Window x:Class="BDO_Spirit.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:wpfui="clr-namespace:WPFUI.Controls;assembly=WPFUI"
+        Style="{StaticResource UiWindow}"
+        WindowStartupLocation="CenterScreen"
+        xmlns:local="clr-namespace:BDO_Spirit"
+        xmlns:pages="clr-namespace:BDO_Spirit.UI.Pages"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" MinWidth="860">
+    <Grid>
+        <wpfui:TitleBar x:Name="RootTitleBar" ApplicationNavigation="True" Panel.ZIndex="0"/>
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+
+
+            <Grid Grid.Column="0" Panel.ZIndex="-1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="6,6,0,24" Panel.ZIndex="-1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <Border
+                    Grid.Column="0"
+                    Grid.Row="0"
+                    Width="40"
+                    Height="40"
+                    CornerRadius="20">
+                        <Border.Background>
+                            <ImageBrush ImageSource="/Files/3957460-middle.png" Stretch="UniformToFill" />
+                        </Border.Background>
+                    </Border>
+                    <StackPanel
+                    Grid.Column="1"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center">
+                        <TextBlock FontWeight="Medium" Text="BDO Spirit" />
+                        <TextBlock Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="A spiritual helper" />
+                    </StackPanel>
+                </Grid>
+
+
+                <wpfui:NavigationFluent
+                x:Name="RootNavigation"
+                Grid.Column="0"
+                Grid.Row="1"
+                Frame="{Binding ElementName=RootFrame}"
+                Loaded="NavigationFluent_Loaded"
+                Navigated="NavigationFluent_Navigated">
+                    <wpfui:NavigationFluent.Items>
+                        <wpfui:NavigationItem
+                        Content="News"
+                        Tag="news"
+                        Icon="News24"
+                        Type="{x:Type pages:NewsPage}"/>
+                        <wpfui:NavigationItem
+                            Content="Central Market"
+                            Tag="market"
+                            Icon="BuildingShop24"
+                            Type="{x:Type pages:MarketPage}"/>                        
+                        <wpfui:NavigationItem
+                            Content="Life Skill"
+                            Tag="lifeskill"
+                            Icon="Accessibility28"
+                            Type="{x:Type pages:MarketPage}"/>
+                    </wpfui:NavigationFluent.Items>
+                    <wpfui:NavigationFluent.Footer>
+                        <wpfui:NavigationItem
+                            Content="Util"
+                            Tag="util"
+                            Icon="Note28"
+                            Type="{x:Type pages:MarketPage}"/>                        
+                        <wpfui:NavigationItem
+                            Content="Settings"
+                            Tag="settings"
+                            Icon="Settings28"
+                            Type="{x:Type pages:MarketPage}"/>
+                    </wpfui:NavigationFluent.Footer>
+                </wpfui:NavigationFluent>
+            </Grid>
+
+            <Frame Grid.Column="1" Margin="10 30 0 0" x:Name="RootFrame"/>
+        </Grid>
+
+    </Grid>
+</Window>
