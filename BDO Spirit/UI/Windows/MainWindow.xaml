@@ -11,7 +11,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" MinWidth="860">
     <Grid>
-        <wpfui:TitleBar x:Name="RootTitleBar" ApplicationNavigation="True" Panel.ZIndex="0"/>
+        <wpfui:TitleBar x:Name="RootTitleBar" ApplicationNavigation="True" Panel.ZIndex="0" CloseClicked="RootTitleBar_CloseClicked"/>
 
         <Grid>
             <Grid.ColumnDefinitions>

@@ -2,7 +2,9 @@
 using BDO_Spirit.Api.Models.BDOMarket;
 using BDO_Spirit.Events;
 using BDO_Spirit.Models;
+using BDO_Spirit.Services;
 using BDO_Spirit.UI.Windows;
+using BDO_Spirit.Util;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -32,19 +34,16 @@ namespace BDO_Spirit.UI.Pages
     /// </summary>
     public partial class MarketPage : Page
     {
-        private string PATH { get; }
 
-        private List<ObservableModel> ObservableModels = new List<ObservableModel>();
+        private ItemsObservableService ObservableService;
 
         public MarketPage()
         {
-            PATH = AppDomain.CurrentDomain.BaseDirectory + "Observables.txt";
-
             InitializeComponent();
 
-            var window = Window.GetWindow(this) as MainWindow;
+            var window = Application.Current.MainWindow as MainWindow;
 
-            ObservableModels.AddRange(window.Observables);
+            ObservableService = window.ObservableService;
 
             EventManager.RegisterClassHandler(typeof(Grid), Grid.MouseLeftButtonDownEvent, new RoutedEventHandler(this.ItemsControlClick));
             EventManager.RegisterClassHandler(typeof(WPFUI.Controls.Icon), WPFUI.Controls.Icon.MouseLeftButtonDownEvent, new RoutedEventHandler(this.HandleObservables));
@@ -54,18 +53,17 @@ namespace BDO_Spirit.UI.Pages
         {
             var icon = sender as WPFUI.Controls.Icon;
 
-            var item = GetClickedItemByParent(sender);
+            var item = GetClickedItemByParent(icon);
 
             if (item == null)
             {
                 return;
             }
-
-            var observableItem = ObservableModels.Find(c => c.Id == item.mainKey);
+            
+            var observableItem = ObservableService.Observables.Find(c => c.Id == item.mainKey);
 
             if (observableItem != null)
             {
-                ObservableModels.Remove(observableItem);
                 item.star = WPFUI.Common.Icon.StarAdd24;
 
                 var eventArgs = new ChangeObservableEventArgs();
@@ -75,7 +73,7 @@ namespace BDO_Spirit.UI.Pages
             }
             else
             {
-                if (ObservableModels.Count >= 10)
+                if (ObservableService.Observables.Count >= 10)
                 {
                     Snack.Title = "Observable items limit reached";
                     Snack.Content = "Observable items has a limit of 10!";
@@ -84,7 +82,6 @@ namespace BDO_Spirit.UI.Pages
                 }
 
                 var model = new ObservableModel() { Id = item.mainKey, PriceAlert = item.totalSumCount };
-                ObservableModels.Add(model);
                 item.star = WPFUI.Common.Icon.Star24;
 
                 var eventArgs = new ChangeObservableEventArgs();
@@ -93,22 +90,12 @@ namespace BDO_Spirit.UI.Pages
                 EventMaster.CallOnChangeObservable(eventArgs);
             }
 
-            SaveCurrentObservabels();
-
             ItemsControl.Items.Refresh();
-        }
-
-
-        private void SaveCurrentObservabels()
-        {
-            var json = JsonConvert.SerializeObject(ObservableModels);
-
-            File.WriteAllText(PATH, json);
         }
 
         private void ItemsControlClick(object sender, RoutedEventArgs e)
         {
-            var item = GetClickedItemByChildren(sender);
+            var item = GetClickedItemByChildren(sender as Grid);
 
             if (item == null)
             {
@@ -118,26 +105,25 @@ namespace BDO_Spirit.UI.Pages
             //Opens market window
         }
 
-        private MarketNameSearchItem GetClickedItemByChildren(object sender)
+        private MarketNameSearchItem GetClickedItemByChildren(Grid grid)
         {
-            var grid = sender as Grid;
-
-            if (grid == null || grid.Name != "ItemGrid")
+            if(grid == null || grid.Name != "ItemGrid")
             {
                 return null;
             }
 
-            var border = grid.Children[1] as Border;
+            var textBlock = UIHelper.FindVisualChildByName<TextBlock>(grid, "MarketItemName");
 
-            var textBlock = border.Child as TextBlock;
-
-            var itemName = textBlock.Text;
+            if(textBlock == null)
+            {
+                return null;
+            }
 
             foreach (var item in ItemsControl.Items)
             {
                 var marketItem = item as MarketNameSearchItem;
 
-                if (marketItem.name != itemName)
+                if (marketItem.name != textBlock.Text)
                 {
                     continue;
                 }
@@ -147,43 +133,17 @@ namespace BDO_Spirit.UI.Pages
             return null;
         }
 
-        private MarketNameSearchItem GetClickedItemByParent(object sender)
+        private MarketNameSearchItem GetClickedItemByParent(WPFUI.Controls.Icon icon)
         {
-            var icon = sender as WPFUI.Controls.Icon;
 
-            var rootGrid = icon.Parent as Grid;
+            var grid = UIHelper.FindVisualParentByName<Grid>(icon, "root");
 
-            if (rootGrid == null)
-            {
-                rootGrid = icon.Parent as Grid;
-                return null;
-            }
-
-            var grid = rootGrid.Children[0] as Grid;
-
-            if (grid == null || grid.Name != "ItemGrid")
+            if (grid == null)
             {
                 return null;
             }
 
-            var border = grid.Children[1] as Border;
-
-            var textBlock = border.Child as TextBlock;
-
-            var itemName = textBlock.Text;
-
-            foreach (var item in ItemsControl.Items)
-            {
-                var marketItem = item as MarketNameSearchItem;
-
-                if (marketItem.name != itemName)
-                {
-                    continue;
-                }
-
-                return marketItem;
-            }
-            return null;
+            return GetClickedItemByChildren(grid.Children[0] as Grid);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

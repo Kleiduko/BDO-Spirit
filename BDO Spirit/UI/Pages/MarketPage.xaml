@@ -35,7 +35,7 @@
                                     </Border.Background>
                                 </Border>
                                 <Border x:Name="border" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="37 0 0 0">
-                                    <TextBlock Text="{Binding name}" Foreground="White" FontWeight="DemiBold"/>
+                                    <TextBlock x:Name="MarketItemName" Text="{Binding name}" Foreground="White" FontWeight="DemiBold"/>
                                 </Border>
 
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">

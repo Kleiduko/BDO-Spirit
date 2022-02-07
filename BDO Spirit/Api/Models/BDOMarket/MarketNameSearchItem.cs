@@ -61,7 +61,7 @@ namespace BDO_Spirit.Api.Models.BDOMarket
         {
             var window = Application.Current.MainWindow as MainWindow;
 
-            var items = window.Observables;
+            var items = window.ObservableService.Observables;
 
             if (items == null || items.Count == 0)
             {

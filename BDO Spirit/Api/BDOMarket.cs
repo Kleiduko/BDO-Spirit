@@ -68,7 +68,7 @@ namespace BDO_Spirit.Api
             return resultItem;
         }
 
-        public static async Task<List<BulkItemSearch>> BulkSearchItemsById(int[] id)
+        public async Task<List<BulkItemSearch>> BulkSearchItemsById(int[] id)
         {
             var result = await LoadResult(ItemBulkSearchByIdUrl, id);
 

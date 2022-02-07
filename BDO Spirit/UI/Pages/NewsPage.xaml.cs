@@ -30,7 +30,7 @@ namespace BDO_Spirit.UI.Pages
         {
             EventManager.RegisterClassHandler(typeof(Border), Border.MouseLeftButtonDownEvent, new RoutedEventHandler(this.MouseLeftButtonDownClassHandler));
 
-            Properties.Resources.load_older.Save(AppDomain.CurrentDomain.BaseDirectory + "Files/load_older.png");
+            Properties.Resources.load_older.Save(AppDomain.CurrentDomain.BaseDirectory + "ItemIcons/load_older.png");
 
             InitializeComponent();
 
@@ -47,7 +47,7 @@ namespace BDO_Spirit.UI.Pages
                 ItemsControl.Items.Add(item);
             }
 
-            var newsItem = new NewsModel("Older news from Black Desert", "", "Load older news", AppDomain.CurrentDomain.BaseDirectory + "Files/load_older.png", "");
+            var newsItem = new NewsModel("Older news from Black Desert", "", "Load older news", AppDomain.CurrentDomain.BaseDirectory + "ItemIcons/load_older.png", "");
 
             ItemsControl.Items.Add(newsItem);
         }

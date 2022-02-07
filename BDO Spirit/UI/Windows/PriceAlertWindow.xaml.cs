@@ -33,7 +33,7 @@ namespace BDO_Spirit.UI.Windows
 
             var window = Application.Current.MainWindow as MainWindow;
 
-            window.Observables.ForEach(model => ItemsControl.Items.Add(model));
+            window.ObservableService.Observables.ForEach(model => ItemsControl.Items.Add(model));
 
             EventMaster.OnChangeObservable += EventMaster_OnChangeObservable;
             EventMaster.OnRefreshObservables += EventMaster_OnRefreshObservables;
@@ -54,7 +54,7 @@ namespace BDO_Spirit.UI.Windows
             {
                 ItemsControl.Items.Remove(args.ObservableModel);
             }
-            else
+            else if(args.ChangeType == ChangeType.Add)
             {
                 ItemsControl.Items.Add(args.ObservableModel);
             }
@@ -68,16 +68,13 @@ namespace BDO_Spirit.UI.Windows
 
             item.PriceAlert = Convert.ToInt64(textBox.Text);
 
-            SaveCurrentObservabels();
-        }
+            var eventArgs = new ChangeObservableEventArgs()
+            {
+                ChangeType = ChangeType.Modify,
+                ObservableModel = item
+            };
 
-        private void SaveCurrentObservabels()
-        {
-            var models = Application.Current.MainWindow as MainWindow;
-
-            var json = JsonConvert.SerializeObject(models.Observables);
-
-            File.WriteAllText(AppDomain.CurrentDomain.BaseDirectory + "Observables.txt", json);
+            EventMaster.CallOnChangeObservable(eventArgs);
         }
 
         private ObservableModel GetItem(object sender)
@@ -89,7 +86,8 @@ namespace BDO_Spirit.UI.Windows
             var grid = UIHelper.FindVisualParentByName<Grid>(numberBox, "ItemGrid");
 
             var textBlock = UIHelper.FindVisualChildByName<TextBlock>(grid, "ItemName");
-            return window.Observables.Find(x => x.BulkItemSearch.name == textBlock.Text);
+
+            return window.ObservableService.Observables.Find(x => x.BulkItemSearch.name == textBlock.Text);
         }
     }
 }

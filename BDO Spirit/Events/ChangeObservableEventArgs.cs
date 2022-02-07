@@ -16,6 +16,7 @@ namespace BDO_Spirit.Events
     public enum ChangeType
     {
         Add,
-        Remove
+        Remove,
+        Modify
     }
 }

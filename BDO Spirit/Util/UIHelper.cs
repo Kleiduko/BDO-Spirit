@@ -60,17 +60,19 @@ namespace BDO_Spirit.Util
 
         public static T FindVisualParentByName<T>(DependencyObject dependencyObject, string controlName) where T : DependencyObject
         {
-            T result = UIHelper.FindVisualParent<T>(dependencyObject);
+            if(dependencyObject == null) return null;
 
-            var s = result as FrameworkElement;
+            var parent = VisualTreeHelper.GetParent(dependencyObject);
 
-            if (s.Name == controlName)
+            var s = parent as FrameworkElement;
+
+            if (s != null && s.Name == controlName)
             {
-                return result;
+                return parent as T;
             }
             else
             {
-                return FindVisualParentByName<T>(result, controlName);
+                return FindVisualParentByName<T>(parent, controlName);
             }
         }
     }

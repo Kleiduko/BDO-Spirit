@@ -38,6 +38,17 @@ namespace BDO_Spirit.Services
             }
         }
 
+        public string GetIconPath()
+        {
+            if (!IsImageExist())
+            {
+                return null;
+            }
+
+
+            return IconPath + IconName + ".png";
+        }
+
         public static string GetIconPath(string name)
         {
             if (!IsImageExist(name))
@@ -55,6 +66,11 @@ namespace BDO_Spirit.Services
             {
                 Directory.CreateDirectory(IconPath);
             }
+        }
+
+        private bool IsImageExist()
+        {
+            return File.Exists(IconPath + IconName + ".png");
         }
 
         private static bool IsImageExist(string name)
